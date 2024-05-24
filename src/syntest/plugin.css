@@ -1,0 +1,28 @@
+.plugin-details-card-body {
+    width: auto;
+    text-align: left;
+}
+
+label {
+    font-weight: bold;
+}
+
+.card-label {
+    font-weight: bold;
+}
+
+.terminal-style {
+    font-size: 13px;
+    background: #0c0c0c;
+    color: white;
+    padding: 5px;
+    width: 75%;
+}
+
+.terminal-style-error {
+    font-size: 13px;
+    background: #0c0c0c;
+    color: #ff6e6d;
+    padding: 5px;
+    width: 75%;
+}

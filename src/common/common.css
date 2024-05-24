@@ -1,0 +1,50 @@
+.bg-status-1-light {
+    background-color: #fff7ee !important;
+}
+
+.bg-status-2-light {
+    background-color: #f7f5e6 !important;
+}
+
+.bg-status-3-light {
+    background-color: #e1ece1 !important;
+}
+
+.bg-status-0-light {
+    background-color: lightgray !important;
+}
+
+.table-row-bg-status-3 {
+    --bs-table-bg: #38b24b
+}
+
+.table-row-bg-status-2 {
+    --bs-table-bg: #f2b927
+}
+
+.table-row-bg-status-1 {
+    --bs-table-bg: #ed5d28
+}
+
+.table-row-bg-status-0 {
+    --bs-table-bg: gray
+}
+
+.table-row-header {
+    text-align: left;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.table-row {
+    cursor: pointer;
+    text-align: left;
+    font-size: 15px;
+    font-weight: normal;
+    border-top: 1px solid #c3c3c3;
+    border-bottom: 1px solid #c3c3c3;
+}
+
+.table-row-closed:hover {
+    --bs-table-bg: rgb(235, 233, 233);
+}

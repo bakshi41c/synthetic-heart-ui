@@ -1,0 +1,11 @@
+.guage-metric {
+    font-size: 50px;
+    font-weight: bold;
+    color: rgb(70, 70, 70);
+}
+
+.guage {
+    height: 100%;
+    width: auto;
+    align-content: center;
+}

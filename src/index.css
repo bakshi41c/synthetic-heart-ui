@@ -11,3 +11,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.test-graph-background {
+  background-color: coral
+}
+.test-table-background {
+  background-color: forestgreen;
+}
+
+.container{
+  max-width: 1600px !important;
+}
