@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/synthetic-heart-ui/static/css/main.b64eeea8.css",
+    "main.js": "/synthetic-heart-ui/static/js/main.7b3e551c.js",
+    "static/js/453.93afad73.chunk.js": "/synthetic-heart-ui/static/js/453.93afad73.chunk.js",
+    "index.html": "/synthetic-heart-ui/index.html",
+    "main.b64eeea8.css.map": "/synthetic-heart-ui/static/css/main.b64eeea8.css.map",
+    "main.7b3e551c.js.map": "/synthetic-heart-ui/static/js/main.7b3e551c.js.map",
+    "453.93afad73.chunk.js.map": "/synthetic-heart-ui/static/js/453.93afad73.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b64eeea8.css",
+    "static/js/main.7b3e551c.js"
+  ]
+}
