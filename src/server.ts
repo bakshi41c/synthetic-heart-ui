@@ -12,7 +12,7 @@ const TESTRUN_LATEST = "/api/v1/testrun/<id>/latest"
 const TESTRUN_LASTFAILED = "/api/v1/testrun/<id>/lastFailed"
 const PLUGIN_HEALTH = "/api/v1/plugin/<id>/health"
 const TESTRUN_LATEST_LOGS = "/api/v1/testrun/<id>/latest/logs"
-const TESTRUN_LASTFAILED_LOGS = "/api/v1/testrun/<id>/latest/logs"
+const TESTRUN_LASTFAILED_LOGS = "/api/v1/testrun/<id>/lastFailed/logs"
 
 export class ApiClient {
   base_url = ""

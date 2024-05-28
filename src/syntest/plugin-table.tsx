@@ -8,6 +8,7 @@ import PluginDetails from './plugin-details';
 import { GetAgentIdFromPluginId, GetItemRowClasses, GetPodNameFromPluginId, GetPodNamespaceFromPluginId  } from '../common/common';
 import expandIcon from './assets/expand_icon.png'
 import './plugin.css';
+import '../common/status/status.css';
 
 function PluginTable({plugins, agents} : {plugins:any, agents:any}) {
   
@@ -94,7 +95,7 @@ function PluginItem({pluginId, plugin, node} : {pluginId : string, plugin:any, n
         <td>{GetPodNameFromPluginId(pluginId)}</td>
         <td>{GetPodNamespaceFromPluginId(pluginId)}</td>
         <td>{node ? node : <LoadingText></LoadingText>}</td>
-        <td>{plugin.healthStatus ? plugin.healthStatus : <LoadingText></LoadingText>}</td>        
+        <td className={plugin.healthStatus == 'running' ? "" : "text-status-fail"}>{plugin.healthStatus ? plugin.healthStatus : <LoadingText></LoadingText>}</td>        
     </tr>
     {open && 
     <tr>
