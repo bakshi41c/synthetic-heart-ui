@@ -1,0 +1,69 @@
+.status-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+}
+
+.status-box-composite {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+}
+
+.bg-status-fail-light {
+    background-color: #fff7ee !important;
+}
+
+.bg-status-warn-light {
+    background-color: #f7f5e6 !important;
+}
+
+.bg-status-pass-light {
+    background-color: #e1ece1 !important;
+}
+
+.bg-status-unknown-light {
+    background-color: lightgray !important;
+}
+
+.bg-status-fail {
+    background-color: #ed5d28 !important;
+    --bs-table-bg: #ed5d28
+}
+
+.bg-status-warn {
+    background-color: #f2b927 !important;
+    --bs-table-bg: #f2b927
+}
+
+.bg-status-pass {
+    background-color: #38b24b !important;
+    --bs-table-bg: #38b24b
+}
+
+.bg-status-unknown {
+    background-color: gray !important;
+    --bs-table-bg: gray
+}
+
+.text-status-fail {
+    color: #ed5d28 !important;
+}
+
+.text-status-warn {
+    color: #f2b927 !important;
+}
+
+.text-status-pass {
+    color: #38b24b !important;
+}
+
+.text-status-unknown {
+    color: gray !important;
+}
+
+.status-icon {
+    margin-left: 22px;
+    font-size: 12px;
+    padding-top: 1px;
+}

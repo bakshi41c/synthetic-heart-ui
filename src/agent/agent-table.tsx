@@ -2,6 +2,8 @@ import JsonView from '@uiw/react-json-view';
 import React, { useState } from 'react'
 import { Card, Container, Nav, Stack, Table } from 'react-bootstrap'
 import { GetItemRowClasses } from '../common/common';
+import { GetStatusBgLightClass, TestRunStatus } from '../common/status/status';
+import '../common/status/status.css'
 
 export default function AgentTable({agents}: {agents: any}) {
     return (
@@ -29,7 +31,7 @@ function AgentItem({agentId, agent} : {agentId : string, agent:any}) {
     const [open, setOpen] = useState(false);
     return (
       <>
-      <tr onClick={() => setOpen(!open)} className={GetItemRowClasses(open, "0")}>
+      <tr onClick={() => setOpen(!open)} className={GetItemRowClasses(open, TestRunStatus.Unknown)}>
           <td>{agent.agentConfig.runTimeInfo.podName}</td>
           <td>{agent.agentConfig.runTimeInfo.agentNamespace}</td>
           <td>{agent.agentConfig.runTimeInfo.nodeName}</td>
@@ -37,7 +39,7 @@ function AgentItem({agentId, agent} : {agentId : string, agent:any}) {
       </tr>
       {open && 
       <tr>
-        <td colSpan={5}  className={"bg-status-0-light"}>
+        <td colSpan={5}  className={GetStatusBgLightClass(TestRunStatus.Unknown)}>
           <AgentDetails key={agentId} agentId={agentId} agent={agent}></AgentDetails>
         </td>
       </tr>

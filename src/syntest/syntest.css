@@ -1,0 +1,15 @@
+.expand-stack-icon {
+    width: 15px;
+    height: 15px;
+    align-items: center;
+}
+.expand-row-item {
+    width: 10px;
+}
+.badge {
+    font-size: 10px;
+    text-align: left;
+    color: black;
+    margin-top: 5px;
+    font-weight: bold;
+}

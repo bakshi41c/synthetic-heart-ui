@@ -2,7 +2,14 @@
     width: auto;
     text-align: left;
 }
-
+.expand-icon {
+    width: 15px;
+    height: 15px;
+    margin-bottom: 5px;
+}
+.expand-row-item {
+    width: 10px;
+}
 label {
     font-weight: bold;
 }
@@ -16,7 +23,7 @@ label {
     background: #0c0c0c;
     color: white;
     padding: 5px;
-    width: 75%;
+    width: 90%;
 }
 
 .terminal-style-error {
@@ -24,5 +31,18 @@ label {
     background: #0c0c0c;
     color: #ff6e6d;
     padding: 5px;
-    width: 75%;
+    width: 90%;
+}
+
+.loading-container {
+    margin: 50px;
+}
+
+.loading-text {
+    text-align: center;
+}
+
+.score-text {
+    font-weight: bold;
+    font-size: 18px;
 }

@@ -7,3 +7,9 @@
 .filter-item{
     text-align: left;
 }
+.status-filter-icon {
+    margin-left: 5px;
+}
+.status-filter-label {
+    margin-left: 5px;
+}
