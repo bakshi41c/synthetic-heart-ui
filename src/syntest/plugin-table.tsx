@@ -87,11 +87,22 @@ function PluginTable({plugins, agents} : {plugins:any, agents:any}) {
 
 function PluginItem({pluginId, plugin, node} : {pluginId : string, plugin:any, node: string, }) {
   const [open, setOpen] = useState(false);
+  
+  let pluginOverallStatus = []
+  let dominantStatus = plugin.testRunStatus
+
+  if (plugin.healthStatus != 'running') {
+    pluginOverallStatus.push(TestRunStatus.Fail) // include the plugin health in the overall status if the plugin is not healthy
+    dominantStatus = TestRunStatus.Fail
+  }
+  pluginOverallStatus.push(plugin.testRunStatus)
+
+
   return (
     <>
-    <tr onClick={() => setOpen(!open)} className={GetItemRowClasses(open, plugin.testRunStatus)}>
+    <tr onClick={() => setOpen(!open)} className={GetItemRowClasses(open, dominantStatus)}>
         <td className='expand-row-item '><img className='expand-icon' src={expandIcon} alt="expand"/></td>
-        <td><Status status={[plugin.testRunStatus]}></Status></td>
+        <td><Status status={pluginOverallStatus}></Status></td>
         <td>{GetPodNameFromPluginId(pluginId)}</td>
         <td>{GetPodNamespaceFromPluginId(pluginId)}</td>
         <td>{node ? node : <LoadingText></LoadingText>}</td>

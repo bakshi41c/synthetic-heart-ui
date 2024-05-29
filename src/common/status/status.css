@@ -63,7 +63,6 @@
 }
 
 .status-icon {
-    margin-left: 22px;
-    font-size: 12px;
-    padding-top: 1px;
+    width: 14px;
+    height: 14px;
 }

@@ -73,15 +73,21 @@ function SyntestTable({configs, agents, nsFilter, statusFilter} :
 function SyntestConfigItem({configSummary, plugins, agents} : {configSummary:any, plugins: any, agents: any}) {
   const [open, setOpen] = useState(false);
   let allStatuses : TestRunStatus[] = []
-  let dominantStatus : TestRunStatus = TestRunStatus.Unknown
+  let dominantStatus : TestRunStatus = TestRunStatus.Unknown // this is one status for the list of plugins  used for the background of the row when clicked
 
   // Go over all test run statuses
   // Compute a dominant status - fail > warn > pass > unknown
   Object.keys(plugins).forEach(pluginId => {
     let testRunStatus = plugins[pluginId].testRunStatus
+
+    if (plugins[pluginId].healthStatus != "running") { // include the plugin health in the overall status if the plugin is not healthy
+      allStatuses.push(TestRunStatus.Fail)
+      dominantStatus = TestRunStatus.Fail
+    }
     allStatuses.push(testRunStatus)
+
     if (dominantStatus != testRunStatus) { // no chage if same status
-      if (dominantStatus == TestRunStatus.Unknown) { // anything is bettern than unknown
+      if (dominantStatus == TestRunStatus.Unknown) { // anything is better than unknown
         dominantStatus = testRunStatus
         
       } else if (dominantStatus == TestRunStatus.Pass) { // fail and warn are more dominant than pass
@@ -107,10 +113,10 @@ function SyntestConfigItem({configSummary, plugins, agents} : {configSummary:any
           </Stack>
         </td>
         <td><Status status={allStatuses}></Status></td>
-        <td>{configSummary.displayName}</td>
-        <td>{configSummary.description}</td>
+        <td className='name-item'>{configSummary.displayName}</td>
+        <td className='desciprtion-item'>{configSummary.description}</td>
         <td>{configSummary.repeat}</td>
-        <td>{configSummary.plugin}</td>
+        <td className='plugin-name-item'>{configSummary.plugin}</td>
         <td>{configSummary.namespace}</td>
         
     </tr>
