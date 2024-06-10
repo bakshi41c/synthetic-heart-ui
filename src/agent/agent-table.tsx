@@ -72,7 +72,7 @@ function AgentDetails({agentId, agent} : {agentId : string, agent:any}) {
             </Stack>
             <Stack direction="horizontal" gap={2}>
                 <div className="card-label p-2">Available Plugins:</div>
-                <div className="p-2"><JsonView value={agent.agentConfig.enabledPlugins} collapsed={false} displayDataTypes={false}/></div>
+                <div className="p-2"><JsonView value={agent.agentConfig.discoveredPlugins} collapsed={true} displayDataTypes={false}/></div>
             </Stack>
             <Stack direction="horizontal" gap={2}>
                 <div className="card-label p-2">Running Tests:</div>

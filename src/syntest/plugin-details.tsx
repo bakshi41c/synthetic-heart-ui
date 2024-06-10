@@ -34,6 +34,7 @@ function PluginDetails({pluginId}: {pluginId : string}) {
 
         apiClient.FetchTestRun(pluginId).then((d) => {d.json().then((data)=>{
             setTestRunData(data)
+            Log.ds(data)
         }).catch((err) => {console.log(err)})}).catch((err) => {console.log(err)})
 
         apiClient.FetchPluginHealth(pluginId).then((d) => {d.json().then((data)=>{
@@ -61,18 +62,19 @@ function PluginDetails({pluginId}: {pluginId : string}) {
                     </Nav.Link>
                 </Nav.Item>
                 <Nav.Item key={3}>
-                    <Nav.Link onClick={() => setTab(3)} href={"#" + 3} disabled={!lastFailedTestRunData.TestRun}>{tabs[3]}</Nav.Link>
+                    <Nav.Link onClick={() => setTab(3)} href={"#" + 3} disabled={!lastFailedTestRunData}>{tabs[3]}</Nav.Link>
                 </Nav.Item>
           </Nav>
         </Card.Header>
-        {activeTab == 0 &&  testRunData.TestRun &&
+        {activeTab == 0 &&  testRunData.testConfig &&
             <Card.Body className="plugin-details-card-body">
-                <TestResult res={testRunData} promUrlFn={getPrometheusLinkFn(prometheusUrl, testRunData.TestRun.testConfig.name, pluginId)}  logsUrl={apiClient.GetLogsUrl(pluginId)}></TestResult>
+                TODO: <TestResult res={testRunData} promUrlFn={getPrometheusLinkFn(prometheusUrl, testRunData.testConfig.name, pluginId)}  logsUrl={apiClient.GetLogsUrl(pluginId)}></TestResult>
             </Card.Body>
         }
-        {activeTab == 0 &&  !testRunData.TestRun &&
+        {activeTab == 0 &&  !testRunData &&
             <Container className="loading-container"><Loading></Loading><p className="loading-text">Waiting for Test to Run</p></Container>
         }
+
         {activeTab == 1 && pluginHealth.config &&
             <Card.Body className="plugin-details-card-body">
                 <JsonView value={pluginHealth.config} collapsed={false} displayDataTypes={false} shortenTextAfterLength={0}/>
@@ -81,6 +83,7 @@ function PluginDetails({pluginId}: {pluginId : string}) {
         {activeTab == 1 &&  !pluginHealth.config &&
              <Container className="loading-container"><Loading></Loading></Container>
         }
+
         {activeTab == 2 && pluginHealth.config &&
             <Card.Body className="plugin-details-card-body">
                 <PluginHealth pluginHealth={pluginHealth}></PluginHealth>
@@ -89,9 +92,10 @@ function PluginDetails({pluginId}: {pluginId : string}) {
         {activeTab == 2 &&  !pluginHealth.config &&
              <Container className="loading-container"><Loading></Loading></Container>
         }
+
         {activeTab == 3 && lastFailedTestRunData.TestRun &&
             <Card.Body className="plugin-details-card-body">
-                <TestResult res={lastFailedTestRunData} promUrlFn={getPrometheusLinkFn(prometheusUrl, testRunData.TestRun.testConfig.name, pluginId)} logsUrl={apiClient.GetLasFailedLogsUrl(pluginId)} ></TestResult>
+                <TestResult res={lastFailedTestRunData} promUrlFn={getPrometheusLinkFn(prometheusUrl, testRunData.testConfig.name, pluginId)} logsUrl={apiClient.GetLasFailedLogsUrl(pluginId)} ></TestResult>
             </Card.Body>
         }
       </Card>
@@ -99,8 +103,8 @@ function PluginDetails({pluginId}: {pluginId : string}) {
 }
 
 function TestResult({res, promUrlFn, logsUrl}: {res : any, promUrlFn : (metricName : string) => string, logsUrl: string}) {
-    Log.d("Marks: " + res.TestRun.testResult.marks)
-    let testRunStatus = GetStatusFromPassRatio(res.TestRun.testResult.marks/res.TestRun.testResult.maxMarks)
+    Log.d("Marks: " + res.testResult.marks)
+    let testRunStatus = GetStatusFromPassRatio(res.testResult.marks/res.testResult.maxMarks)
     return (
         <Card.Body>
             <Container>
@@ -108,33 +112,33 @@ function TestResult({res, promUrlFn, logsUrl}: {res : any, promUrlFn : (metricNa
                     <Col>
                         <Stack direction="horizontal" gap={2}>
                         <div className="card-label p-2">Name:</div>
-                        <div className="p-2">{res.TestRun.testConfig.displayName}</div>
+                        <div className="p-2">{res.testConfig.displayName}</div>
                         </Stack>
                         <Stack direction="horizontal" gap={2}>
                             <div className="card-label p-2">Description:</div>
-                            <div className="p-2">{res.TestRun.testConfig.description}</div>
+                            <div className="p-2">{res.testConfig.description}</div>
                         </Stack>
                         <Stack direction="horizontal" gap={2}>
                             <div className="card-label p-2">Namespace:</div>
-                            <div className="p-2">{res.TestRun.testConfig.namespace}</div>
+                            <div className="p-2">{res.testConfig.namespace}</div>
                         </Stack>
                         <Stack direction="horizontal" gap={2}>
                             <div className="card-label p-2">Node:</div>
-                            <div className="p-2">{res.TestRun.testConfig.runtime.$nodeName}</div>
+                            <div className="p-2">{res.testConfig.runtime.$nodeName}</div>
                         </Stack>
                         <Stack direction="horizontal" gap={2}>
                             <div className="card-label p-2">Last Test:</div>
-                            <div className="p-2">{ moment(res.TestRun.endTime).fromNow()}</div>
+                            <div className="p-2">{ moment(res.endTime).fromNow()}</div>
                         </Stack>
                     </Col>
                     <Col>
                         <Stack direction="horizontal" gap={2}>
                             <div className="card-label p-2">Test Run Id:</div>
-                            <div className="p-2">{res.TestRun.id}</div>
+                            <div className="p-2">{res.id}</div>
                         </Stack>
                         <Stack direction="horizontal" gap={2}>
                             <div className="card-label p-2">Repeat:</div>
-                            <div className="p-2">{res.TestRun.testConfig.repeat}</div>
+                            <div className="p-2">{res.testConfig.repeat}</div>
                         </Stack>
                         <Stack direction="horizontal" gap={2}>
                             <div className="card-label p-2">CRD:</div>
@@ -156,17 +160,17 @@ function TestResult({res, promUrlFn, logsUrl}: {res : any, promUrlFn : (metricNa
                 <Row>
                     <Stack direction="horizontal" gap={2}>
                         <div className="card-label p-2">Score:</div>
-                        <div className={"p-2 score-text text-status-"+testRunStatus}>{res.TestRun.testResult.marks} / {res.TestRun.testResult.maxMarks}</div>
+                        <div className={"p-2 score-text text-status-"+testRunStatus}>{res.testResult.marks} / {res.testResult.maxMarks}</div>
                         <div className={"p-2 score-text text-status-"+testRunStatus}>{"("+TitleCase(testRunStatus.toString())+")"}</div>
                     </Stack>
                     <br></br>
                     <Stack direction="horizontal" gap={2}>
                         <div className="card-label p-2"><a target="_blank" href={logsUrl}>Logs:</a></div>
-                        <textarea className="terminal-style" rows={12} value={res.TestRun.details._log} readOnly={true}></textarea>
+                        <textarea className="terminal-style" rows={12} value={res.details._log} readOnly={true}></textarea>
                     </Stack>
                     <Stack direction="horizontal" gap={2}>
                         <div className="card-label p-2">Raw Test Result:</div>
-                        <JsonView value={res.TestRun} collapsed={true} displayDataTypes={false} shortenTextAfterLength={0}/>
+                        <JsonView value={res} collapsed={true} displayDataTypes={false} shortenTextAfterLength={0}/>
                     </Stack>
                 </Row>
             </Container>
@@ -216,14 +220,14 @@ function GetPrometheusMetricList(res : any) {
     metricList.push("marks_total")
     metricList.push("max_marks_total")
     metricList.push("runtime_ns")
-    if (res.TestRun && 
-        res.TestRun.testResult && 
-        res.TestRun.testResult.details && 
-        res.TestRun.testResult.details._prometheus) {
+    if (res && 
+        res && 
+        res.details && 
+        res.details._prometheus) {
         
         let s = new Set()
 
-        let metrics = yamlParse(res.TestRun.testResult.details._prometheus)
+        let metrics = yamlParse(res.details._prometheus)
         metrics.gauges.forEach((gauge :any) => {
             s.add(gauge.name)
         });
