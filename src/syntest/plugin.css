@@ -18,6 +18,14 @@ label {
     font-weight: bold;
 }
 
+.config-style {
+    font-size: 15px;
+    background: #ffffff;
+    color: rgb(59, 59, 59);
+    padding: 5px;
+    width: 90%;
+}
+
 .terminal-style {
     font-size: 13px;
     background: #0c0c0c;
@@ -27,11 +35,15 @@ label {
 }
 
 .terminal-style-error {
-    font-size: 13px;
+    font-size: 14px;
     background: #0c0c0c;
     color: #ff6e6d;
     padding: 5px;
     width: 90%;
+}
+
+.text-error {
+    color: #ff0200;
 }
 
 .loading-container {
@@ -52,4 +64,8 @@ label {
     margin-bottom: 5px;
     height: 20px;
     width: 20px;
+}
+
+.plugin-table {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
 }

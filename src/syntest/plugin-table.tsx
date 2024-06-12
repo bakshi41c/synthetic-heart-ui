@@ -1,17 +1,36 @@
 import { config } from 'process'
-import React from 'react'
-import { Table } from 'react-bootstrap'
+import React, { useEffect } from 'react'
+import { Card, Col, Container, Row, Stack, Table } from 'react-bootstrap'
 import { useState } from 'react';
 import Status, { TestRunStatus } from '../common/status/status';
 import LoadingText from '../common/loading/loading';
 import PluginDetails from './plugin-details';
-import { GetAgentIdFromPluginId, GetItemRowClasses, GetPodNameFromPluginId, GetPodNamespaceFromPluginId  } from '../common/common';
+import { GetAgentIdFromPluginId, GetConfigIdFromPluginId, GetItemRowClasses, GetPodNameFromPluginId, GetPodNamespaceFromPluginId  } from '../common/common';
 import expandIcon from './assets/expand_icon.png'
 import './plugin.css';
 import '../common/status/status.css';
+import { ApiClient } from '../server';
+import Loading from '../common/loading/loading';
+import JsonView from '@uiw/react-json-view';
+import moment from 'moment';
 
-function PluginTable({plugins, agents} : {plugins:any, agents:any}) {
+function PluginTable({configId, plugins, agents} : {configId: string, plugins:any, agents:any}) {
   
+  // Fetch the test config data from server
+  const queryParameters = new URLSearchParams(window.location.search)
+  const server = queryParameters.get("server")
+  const [testConfigData, setTestConfigData] = useState<any>({})  
+  let apiClient = new ApiClient(server)
+  useEffect(() => {
+    apiClient.FetchTestConfig(configId).then((d) => {d.json().then((data)=>{
+        setTestConfigData(data)
+        console.dir(data)
+    }).catch((err) => {console.log(err)})}).catch((err) => {console.log(err)})
+  }, [])
+
+
+  // create frou tables for different states the plugins can be in so its easy for the user
+
   let failedStatusPlugins : any = {}
   let warningStatusPlugins : any = {}
   let passingStatusPlugins : any = {}
@@ -33,12 +52,74 @@ function PluginTable({plugins, agents} : {plugins:any, agents:any}) {
           unknownStatusPlugins[pluginId] = plugins[pluginId]
     }
   })
-
+  
   let tableHeaders : string [] = ['', '  ', 'Pod Name', 'Pod Namespace', 'Node', 'Plugin Status'];
 
   return (
     <>
-    <Table>
+    <Card>
+    <Card.Body>
+    <h5>{testConfigData.testConfig && testConfigData.testConfig.displayName + " (" +testConfigData.testConfig.name +")"}</h5>
+    <hr></hr>
+
+
+    <Container>
+      {!testConfigData.testConfig &&
+        <Container className="loading-container"><Loading></Loading><p className="loading-text">Waiting for Test to Run</p></Container>
+      }
+      {testConfigData.testConfig &&
+        <Row>
+          <Col>
+              <Stack direction="horizontal" gap={2}>
+                  <div className="card-label p-2">Description:</div>
+                  <div className="p-2">{testConfigData.testConfig.description}</div>
+              </Stack>
+              <Stack direction="horizontal" gap={2}>
+                  <div className="card-label p-2">Namespace:</div>
+                  <div className="p-2">{testConfigData.testConfig.namespace}</div>
+              </Stack>
+              <Stack direction="horizontal" gap={2}>
+                  <div className="card-label p-2">Plugin:</div>
+                  <div className="p-2">{testConfigData.testConfig.pluginName}</div>
+              </Stack>
+              <Stack direction="horizontal" gap={2}>
+                  <div className="card-label p-2">Labels:</div>
+                  <JsonView value={testConfigData.testConfig.labels} collapsed={true} displayDataTypes={false} shortenTextAfterLength={0}/>
+              </Stack>
+          </Col>
+          <Col>
+              <Stack direction="horizontal" gap={2}>
+                  <div className="card-label p-2">Repeats Every:</div>
+                  <div className="p-2">{testConfigData.testConfig.repeat}</div>
+              </Stack>
+              <Stack direction="horizontal" gap={2}>
+                  <div className="card-label p-2">CRD:</div>
+                  <div className="p-2"><a href=''>Copy CRD</a></div>
+              </Stack>
+              <Stack direction="horizontal" gap={2}>
+                  <div className="card-label p-2">Node Selector:</div>
+                  <div className="p-2">{testConfigData.testConfig.nodeSelector}</div>
+              </Stack>
+              <Stack direction="horizontal" gap={2}>
+                  <div className="card-label p-2">Pod Label Selector:</div>
+                  <JsonView value={testConfigData.testConfig.podLabelSelector} collapsed={true} displayDataTypes={false} shortenTextAfterLength={0}/>
+              </Stack>
+          </Col>
+        </Row>
+      }
+      {testConfigData.configStatus && !testConfigData.configStatus.deployed &&
+        <>
+        <hr></hr>
+        <h6 className='text-error'>NOT running, status from controller:</h6>
+        <textarea className="terminal-style-error" rows={5} value={testConfigData.configStatus.message} readOnly={true}></textarea>
+        <p>Last Update: {moment(testConfigData.configStatus.timestamp).fromNow()}</p>
+        </>
+      }
+    </Container>
+    <hr></hr>
+    <p>Agents running this test:</p>
+    {/* Plugin Table */}
+    <Table className='plugin-table'>
       <thead>
         <tr className='table-row-header'>
         {tableHeaders.map((tableHeader: any) => (
@@ -50,7 +131,7 @@ function PluginTable({plugins, agents} : {plugins:any, agents:any}) {
       <tbody>
         {/* Put the different status items in groups, adding a blank row between them */}
         {Object.keys(plugins).length == 0 &&
-          <tr><td colSpan={tableHeaders.length}><LoadingText></LoadingText><p>Waiting for tests to run</p></td></tr>
+          <tr><td colSpan={tableHeaders.length}><LoadingText></LoadingText><p className="loading-text">Waiting for tests to run</p></td></tr>
         }
         {Object.keys(failedStatusPlugins).length > 0 &&
           <tr><td colSpan={tableHeaders.length}></td></tr>
@@ -81,6 +162,9 @@ function PluginTable({plugins, agents} : {plugins:any, agents:any}) {
         }
       </tbody>
     </Table>
+    </Card.Body>
+    <JsonView value={testConfigData} collapsed={true} displayDataTypes={false} shortenTextAfterLength={0}/>
+    </Card>
     </>
   )
 }

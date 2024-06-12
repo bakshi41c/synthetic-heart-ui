@@ -8,6 +8,7 @@ const ALL_TEST_CONFIGS_URL = "//api/v1/testconfigs/summary"
 const ALL_PLUGIN_STATUS_URL = "/api/v1/plugins/status"
 const ALL_TESTRUN_STATUS_URL = "/api/v1/testruns/status"
 
+const TESTCONFIG = "/api/v1/testconfig/<id>"
 const TESTRUN_LATEST = "/api/v1/testrun/<id>/latest"
 const TESTRUN_LASTFAILED = "/api/v1/testrun/<id>/lastFailed"
 const PLUGIN_HEALTH = "/api/v1/plugin/<id>/health"
@@ -86,6 +87,11 @@ export class ApiClient {
   public async FetchTestConfigs() {
     const res = await fetch(this.base_url + ALL_TEST_CONFIGS_URL);
     return await res.json();
+  }
+
+  public async FetchTestConfig(configId: string) {
+    Log.d("Fetching Test Config data " + configId)
+    return fetch(this.base_url + TESTCONFIG.replaceAll("<id>", configId));
   }
 
   public async FetchTestRunStatuses() {

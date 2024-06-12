@@ -62,7 +62,7 @@ function SyntestTable({configs, agents, nsFilter, statusFilter} :
       <tbody>
         {
         Object.keys(filteredConfigs).map((configId: any) => (
-          <SyntestConfigItem key={configId} agents={agents} configSummary={filteredConfigs[configId].configSummary} plugins={filteredConfigs[configId].plugins ? filteredConfigs[configId].plugins : []}></SyntestConfigItem>
+          <SyntestConfigItem key={configId} configId={configId} agents={agents} configSummary={filteredConfigs[configId].configSummary} plugins={filteredConfigs[configId].plugins ? filteredConfigs[configId].plugins : []}></SyntestConfigItem>
           ))
         }
       </tbody>
@@ -70,7 +70,7 @@ function SyntestTable({configs, agents, nsFilter, statusFilter} :
   )
 }
 
-function SyntestConfigItem({configSummary, plugins, agents} : {configSummary:any, plugins: any, agents: any}) {
+function SyntestConfigItem({configId, configSummary, plugins, agents} : {configId: string, configSummary:any, plugins: any, agents: any}) {
   const [open, setOpen] = useState(false);
   let allStatuses : TestRunStatus[] = []
   let dominantStatus : TestRunStatus = TestRunStatus.Unknown // this is one status for the list of plugins  used for the background of the row when clicked
@@ -105,6 +105,7 @@ function SyntestConfigItem({configSummary, plugins, agents} : {configSummary:any
 
   return (
     <>
+    {/* The row for the test */}
     <tr onClick={() => setOpen(!open)} data-target="" className={GetItemRowClasses(open, dominantStatus)}>
         <td className="expand-row-item">
           <Stack direction="horizontal" >
@@ -120,10 +121,12 @@ function SyntestConfigItem({configSummary, plugins, agents} : {configSummary:any
         <td>{configSummary.namespace}</td>
         
     </tr>
+
+    {/* The row details (hidden unless clicked) */}
     { open &&
     <tr>
       <td colSpan={8} className={GetStatusBgLightClass(dominantStatus)}>
-        <PluginTable plugins={plugins} agents={agents}></PluginTable>
+        <PluginTable configId={configId} plugins={plugins} agents={agents}></PluginTable>
       </td>
     </tr>
     }

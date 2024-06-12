@@ -121,12 +121,12 @@ function App() {
 
         <Row>
           {/* The filter sidebar */}
-          <Col md={3} className="align-self-start">
+          <Col md={2} className="align-self-start">
             <Sidebar onFilterChange={onFilterChanged} testConfigs={testConfigs} disabled={activeTab == 1}></Sidebar>
           </Col>
 
           {/* The table for tests or plguins depending on the active tab */}
-          <Col md={9}>
+          <Col md={10}>
             <Nav className='mainTab' variant="tabs" defaultActiveKey="#0">
                   <Nav.Item key={0}>
                       <Nav.Link onClick={() => setTab(0)} href={"#" + 0}>{tabs[0] + " ("+Object.keys(testConfigs).length +")"}</Nav.Link>

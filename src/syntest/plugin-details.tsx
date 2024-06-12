@@ -20,7 +20,6 @@ function PluginDetails({pluginId}: {pluginId : string}) {
     const server = queryParameters.get("server")
 
     const [activeTab, setTab] = useState(0)
-
     const [testRunData, setTestRunData] = useState<any>({})
     const [pluginHealth, setPluginHealth] = useState<any>({})
     const [lastFailedTestRunData, setLastFailedTestRunData] = useState<any>({})
@@ -34,7 +33,6 @@ function PluginDetails({pluginId}: {pluginId : string}) {
 
         apiClient.FetchTestRun(pluginId).then((d) => {d.json().then((data)=>{
             setTestRunData(data)
-            Log.ds(data)
         }).catch((err) => {console.log(err)})}).catch((err) => {console.log(err)})
 
         apiClient.FetchPluginHealth(pluginId).then((d) => {d.json().then((data)=>{
@@ -62,13 +60,13 @@ function PluginDetails({pluginId}: {pluginId : string}) {
                     </Nav.Link>
                 </Nav.Item>
                 <Nav.Item key={3}>
-                    <Nav.Link onClick={() => setTab(3)} href={"#" + 3} disabled={!lastFailedTestRunData}>{tabs[3]}</Nav.Link>
+                    <Nav.Link onClick={() => setTab(3)} href={"#" + 3} disabled={!lastFailedTestRunData.TestResult || lastFailedTestRunData.id == testRunData.id}>{tabs[3]}</Nav.Link>
                 </Nav.Item>
           </Nav>
         </Card.Header>
         {activeTab == 0 &&  testRunData.testConfig &&
             <Card.Body className="plugin-details-card-body">
-                TODO: <TestResult res={testRunData} promUrlFn={getPrometheusLinkFn(prometheusUrl, testRunData.testConfig.name, pluginId)}  logsUrl={apiClient.GetLogsUrl(pluginId)}></TestResult>
+                <TestResult res={testRunData} promUrlFn={getPrometheusLinkFn(prometheusUrl, testRunData.testConfig.name, pluginId)}  logsUrl={apiClient.GetLogsUrl(pluginId)}></TestResult>
             </Card.Body>
         }
         {activeTab == 0 &&  !testRunData &&
@@ -77,7 +75,11 @@ function PluginDetails({pluginId}: {pluginId : string}) {
 
         {activeTab == 1 && pluginHealth.config &&
             <Card.Body className="plugin-details-card-body">
-                <JsonView value={pluginHealth.config} collapsed={false} displayDataTypes={false} shortenTextAfterLength={0}/>
+                <textarea className="config-style" rows={12} value={pluginHealth.config.config} readOnly={true}></textarea>
+                <Stack direction="horizontal" gap={2}>
+                        <div className="card-label p-2">Full Test Config:</div>
+                        <JsonView value={pluginHealth.config} collapsed={true} displayDataTypes={false} shortenTextAfterLength={0}/>
+                    </Stack>
             </Card.Body>
         }
         {activeTab == 1 &&  !pluginHealth.config &&
@@ -93,7 +95,7 @@ function PluginDetails({pluginId}: {pluginId : string}) {
              <Container className="loading-container"><Loading></Loading></Container>
         }
 
-        {activeTab == 3 && lastFailedTestRunData.TestRun &&
+        {activeTab == 3 && lastFailedTestRunData &&
             <Card.Body className="plugin-details-card-body">
                 <TestResult res={lastFailedTestRunData} promUrlFn={getPrometheusLinkFn(prometheusUrl, testRunData.testConfig.name, pluginId)} logsUrl={apiClient.GetLasFailedLogsUrl(pluginId)} ></TestResult>
             </Card.Body>
@@ -103,6 +105,7 @@ function PluginDetails({pluginId}: {pluginId : string}) {
 }
 
 function TestResult({res, promUrlFn, logsUrl}: {res : any, promUrlFn : (metricName : string) => string, logsUrl: string}) {
+    Log.dr(res)
     Log.d("Marks: " + res.testResult.marks)
     let testRunStatus = GetStatusFromPassRatio(res.testResult.marks/res.testResult.maxMarks)
     return (
@@ -112,43 +115,32 @@ function TestResult({res, promUrlFn, logsUrl}: {res : any, promUrlFn : (metricNa
                     <Col>
                         <Stack direction="horizontal" gap={2}>
                         <div className="card-label p-2">Name:</div>
-                        <div className="p-2">{res.testConfig.displayName}</div>
-                        </Stack>
-                        <Stack direction="horizontal" gap={2}>
-                            <div className="card-label p-2">Description:</div>
-                            <div className="p-2">{res.testConfig.description}</div>
-                        </Stack>
-                        <Stack direction="horizontal" gap={2}>
-                            <div className="card-label p-2">Namespace:</div>
-                            <div className="p-2">{res.testConfig.namespace}</div>
-                        </Stack>
-                        <Stack direction="horizontal" gap={2}>
-                            <div className="card-label p-2">Node:</div>
-                            <div className="p-2">{res.testConfig.runtime.$nodeName}</div>
+                        <div className="p-2">{res.testConfig.displayName + " (" + res.testConfig.name + ")"}</div>
                         </Stack>
                         <Stack direction="horizontal" gap={2}>
                             <div className="card-label p-2">Last Test:</div>
                             <div className="p-2">{ moment(res.endTime).fromNow()}</div>
                         </Stack>
+                        <Stack direction="horizontal" gap={2}>
+                            <div className="card-label p-2">Score:</div>
+                            <div className={"p-2 score-text text-status-"+testRunStatus}>{res.testResult.marks} / {res.testResult.maxMarks}</div>
+                            <div className={"p-2 score-text text-status-"+testRunStatus}>{"("+TitleCase(testRunStatus.toString())+")"}</div>
+                        </Stack>
                     </Col>
                     <Col>
                         <Stack direction="horizontal" gap={2}>
-                            <div className="card-label p-2">Test Run Id:</div>
-                            <div className="p-2">{res.id}</div>
+                            <div className="card-label p-2">Node:</div>
+                            <div className="p-2">{res.testConfig.runtime.$nodeName}</div>
                         </Stack>
                         <Stack direction="horizontal" gap={2}>
-                            <div className="card-label p-2">Repeat:</div>
-                            <div className="p-2">{res.testConfig.repeat}</div>
-                        </Stack>
-                        <Stack direction="horizontal" gap={2}>
-                            <div className="card-label p-2">CRD:</div>
-                            <div className="p-2"><a href={logsUrl}>Copy CRD</a></div>
+                            <div className="card-label p-2">Pod:</div>
+                            <div className="p-2">{res.testConfig.runtime.$podName}</div>
                         </Stack>
                         <Stack direction="horizontal" gap={2}>
                             <div className="card-label p-2">Metrics:</div>
                             <div className="p-2">
                             <DropdownButton className="prometheus-btn red" title="Prometheus">
-                                {GetPrometheusMetricList(res).map((metric : string) => (
+                                {GetPrometheusMetricList(res.testResult).map((metric : string) => (
                                     <Dropdown.Item target="_blank" href={promUrlFn(metric)}>{metric}</Dropdown.Item>
                                 ))
                                 }
@@ -158,11 +150,6 @@ function TestResult({res, promUrlFn, logsUrl}: {res : any, promUrlFn : (metricNa
                     </Col>
                 </Row>
                 <Row>
-                    <Stack direction="horizontal" gap={2}>
-                        <div className="card-label p-2">Score:</div>
-                        <div className={"p-2 score-text text-status-"+testRunStatus}>{res.testResult.marks} / {res.testResult.maxMarks}</div>
-                        <div className={"p-2 score-text text-status-"+testRunStatus}>{"("+TitleCase(testRunStatus.toString())+")"}</div>
-                    </Stack>
                     <br></br>
                     <Stack direction="horizontal" gap={2}>
                         <div className="card-label p-2"><a target="_blank" href={logsUrl}>Logs:</a></div>
@@ -204,7 +191,7 @@ function PluginHealth({pluginHealth}: {pluginHealth : any}) {
             </Stack>
             <Stack direction="horizontal" gap={2}>
                 <div className="card-label p-2">Running Since:</div>
-                <div className="p-2">{pluginHealth == "running" ? moment(pluginHealth.runningSince).fromNow() : "Not running" }</div>
+                <div className="p-2">{pluginHealth.status == "running" ? moment(pluginHealth.runningSince).fromNow() : "Not running" }</div>
             </Stack>
             <Stack direction="horizontal" gap={2}>
                 <div className="card-label p-2">Raw JSON:</div>
@@ -221,7 +208,6 @@ function GetPrometheusMetricList(res : any) {
     metricList.push("max_marks_total")
     metricList.push("runtime_ns")
     if (res && 
-        res && 
         res.details && 
         res.details._prometheus) {
         

@@ -13,7 +13,8 @@ export default function AgentTable({agents}: {agents: any}) {
               <th>Pod</th>
               <th>Namespace</th>
               <th>Node</th>
-              <th>Only Watching Own Namespace</th>
+              <th>Watching Namespaces</th>
+              <th>Mandatory Labels</th>
             </tr>
           </thead>
           <tbody>
@@ -35,7 +36,8 @@ function AgentItem({agentId, agent} : {agentId : string, agent:any}) {
           <td>{agent.agentConfig.runTimeInfo.podName}</td>
           <td>{agent.agentConfig.runTimeInfo.agentNamespace}</td>
           <td>{agent.agentConfig.runTimeInfo.nodeName}</td>
-          <td>{agent.agentConfig.watchOwnNamespaceOnly ? "Yes" : "No"}</td>        
+          <td>{agent.agentConfig.matchNamespaceSet.length == 0 ? "All" : JSON.stringify(agent.agentConfig.matchNamespaceSet)}</td>
+          <td>{agent.agentConfig.matchTestLabels.length == 0 ? "None" : JSON.stringify(agent.agentConfig.matchTestLabels)}</td>        
       </tr>
       {open && 
       <tr>
