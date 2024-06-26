@@ -1,16 +1,17 @@
 {
   "files": {
-    "main.css": "/synthetic-heart-ui/static/css/main.d847ebd2.css",
-    "main.js": "/synthetic-heart-ui/static/js/main.b34c9a0e.js",
+    "main.css": "/synthetic-heart-ui/static/css/main.0202fbc1.css",
+    "main.js": "/synthetic-heart-ui/static/js/main.eb2611ee.js",
     "static/js/453.93afad73.chunk.js": "/synthetic-heart-ui/static/js/453.93afad73.chunk.js",
-    "static/media/logo.svg": "/synthetic-heart-ui/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "static/media/synheart-logo.png": "/synthetic-heart-ui/static/media/synheart-logo.ce8afe1c64ff640bb11e.png",
+    "static/media/company-logo.png": "/synthetic-heart-ui/static/media/company-logo.ea4dcf7367adf6ce703c.png",
     "index.html": "/synthetic-heart-ui/index.html",
-    "main.d847ebd2.css.map": "/synthetic-heart-ui/static/css/main.d847ebd2.css.map",
-    "main.b34c9a0e.js.map": "/synthetic-heart-ui/static/js/main.b34c9a0e.js.map",
+    "main.0202fbc1.css.map": "/synthetic-heart-ui/static/css/main.0202fbc1.css.map",
+    "main.eb2611ee.js.map": "/synthetic-heart-ui/static/js/main.eb2611ee.js.map",
     "453.93afad73.chunk.js.map": "/synthetic-heart-ui/static/js/453.93afad73.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d847ebd2.css",
-    "static/js/main.b34c9a0e.js"
+    "static/css/main.0202fbc1.css",
+    "static/js/main.eb2611ee.js"
   ]
 }
