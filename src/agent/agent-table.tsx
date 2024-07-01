@@ -37,7 +37,7 @@ function AgentItem({agentId, agent} : {agentId : string, agent:any}) {
           <td>{agent.agentConfig.runTimeInfo.agentNamespace}</td>
           <td>{agent.agentConfig.runTimeInfo.nodeName}</td>
           <td>{agent.agentConfig.matchNamespaceSet.length == 0 ? "All" : JSON.stringify(agent.agentConfig.matchNamespaceSet)}</td>
-          <td>{agent.agentConfig.matchTestLabels.length == 0 ? "None" : JSON.stringify(agent.agentConfig.matchTestLabels)}</td>        
+          <td>{agent.agentConfig.matchTestLabels && agent.agentConfig.matchTestLabels.length == 0 ? "None" : JSON.stringify(agent.agentConfig.matchTestLabels)}</td>
       </tr>
       {open && 
       <tr>
